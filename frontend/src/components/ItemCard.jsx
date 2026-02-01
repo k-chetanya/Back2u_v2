@@ -1,22 +1,20 @@
 import { Link } from "react-router-dom";
-import axios from "axios";
 import { toast } from "sonner";
+import { resolveItemById } from "../api/item.api";
 
 const ItemCard = ({ item, isDashboard }) => {
-  const resolveItem = async () => {
+  const resolveItemHandler = async () => {
     try {
-      const res = await axios.patch(
-        `http://localhost:8000/api/v1/item/resolve/${item._id}`,
-        {},
-        { withCredentials: true }
-      );
+      const res = await resolveItemById(item._id);
 
       if (res.data.success) {
         toast.success("Item resolved");
         window.location.reload();
       }
     } catch (error) {
-      toast.error("Failed to resolve item");
+      toast.error(
+        error.response?.data?.message || "Failed to resolve item"
+      );
     }
   };
 
@@ -73,7 +71,7 @@ const ItemCard = ({ item, isDashboard }) => {
             </Link>
 
             <button
-              onClick={resolveItem}
+              onClick={resolveItemHandler}
               className="text-sm bg-green-600 text-white px-3 py-1 rounded"
             >
               Resolve
