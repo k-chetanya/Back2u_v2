@@ -101,17 +101,18 @@ export const login = async (req, res) => {
         );
 
         return res
-            .status(200)
-            .cookie("token", token, {
-                maxAge: 24 * 60 * 60 * 1000,
-                httpOnly: true,
-                sameSite: "lax",
-            })
-            .json({
-                success: true,
-                message: `Welcome back ${user.firstName}`,
-                user,
-            });
+  .status(200)
+  .cookie("token", token, {
+    maxAge: 24 * 60 * 60 * 1000,
+    httpOnly: true,
+    secure: true,        // ✅ REQUIRED (HTTPS)
+    sameSite: "None",    // ✅ REQUIRED (cross-site)
+  })
+  .json({
+    success: true,
+    message: `Welcome back ${user.firstName}`,
+    user,
+  });
     } catch (error) {
         console.error("LOGIN ERROR:", error);
         return res.status(500).json({
@@ -124,10 +125,19 @@ export const login = async (req, res) => {
 
 export const logout = async(_,res) => {
     try {
-        return res.status(200).cookie("token","",{maxAge: 0}).json({
-            success:true,
-            message:"Logout successfully"
-        });
+        return res
+  .status(200)
+  .cookie("token", "", {
+    maxAge: 0,
+    httpOnly: true,
+    secure: true,
+    sameSite: "None",
+  })
+  .json({
+    success: true,
+    message: "Logout successfully",
+  });
+
     } catch (error) {
         console.log(error);       
     }
