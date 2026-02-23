@@ -15,15 +15,27 @@ export const createItem = async (req, res) => {
     }
 
     let imageUrl = "";
+if (req.file) {
+  console.log("=== FILE DEBUG START ===");
+  console.log("FILE:", req.file);
+  console.log("MIME:", req.file?.mimetype);
+  console.log("NAME:", req.file?.originalname);
+  console.log("SIZE:", req.file?.size);
 
-    if (req.file) {
-      const fileUri = getDataUri(req.file);
-      const cloudRes = await cloudinary.uploader.upload(
-        fileUri.content,
-        { folder: "lost-found-items" }
-      );
-      imageUrl = cloudRes.secure_url;
-    }
+  const fileUri = getDataUri(req.file);
+
+  console.log(
+    "DATA URI START:",
+    fileUri.content.substring(0, 80)
+  );
+
+  const cloudRes = await cloudinary.uploader.upload(
+    fileUri.content,
+    { folder: "lost-found-items" }
+  );
+
+  imageUrl = cloudRes.secure_url;
+}
 
     const item = await Item.create({
       title,
